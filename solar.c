@@ -52,11 +52,10 @@ void keyboard (unsigned char key, int x, int y)
          glutPostRedisplay();
          break;
       case 'y':
-         t += 1;
+         t += 5;
          x_planet = 2 * cos(t * M_PI / 360);
          y_planet = 2 * sin(t * M_PI / 360);
          printf("x_planet = %f\n", x_planet);
-         year = (year + 5) % 360;
          glutPostRedisplay();
          break;
       case 'Y':
