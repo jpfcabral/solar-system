@@ -1,8 +1,12 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
+#include <math.h>
+#include <stdio.h>
 
 static int year = 0, day = 0;
+static float x_planet = 0.0, y_planet = 0.0, z_planet = 0.0;
+static float t = 0.0;
 
 void init(void) 
 {
@@ -18,7 +22,7 @@ void display(void)
    glPushMatrix();
    glutWireSphere(1.0, 20, 16);   /* draw sun */
    glRotatef ((GLfloat) year, 0.0, 1.0, 0.0);
-   glTranslatef (2.0, 0.0, 0.0);
+   glTranslatef ((GLfloat) x_planet, (GLfloat) y_planet, 0.0);
    glRotatef ((GLfloat) day, 0.0, 1.0, 0.0);
    glutWireSphere(0.2, 10, 8);    /* draw smaller planet */
    glPopMatrix();
@@ -48,6 +52,10 @@ void keyboard (unsigned char key, int x, int y)
          glutPostRedisplay();
          break;
       case 'y':
+         t += 1;
+         x_planet = 2 * cos(t * M_PI / 360);
+         y_planet = 2 * sin(t * M_PI / 360);
+         printf("x_planet = %f\n", x_planet);
          year = (year + 5) % 360;
          glutPostRedisplay();
          break;
