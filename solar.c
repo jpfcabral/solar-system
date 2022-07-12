@@ -62,6 +62,19 @@ void keyboard (unsigned char key, int x, int y)
          year = (year - 5) % 360;
          glutPostRedisplay();
          break;
+      case 'a':
+         t += 5;
+         x_planet = 2 * cos(t * M_PI / 360);
+         y_planet = 2 * sin(t * M_PI / 360);
+         day = (day + 10) % 360;
+         printf("x_planet = %f\n", x_planet);
+         glutPostRedisplay();
+         break;
+      case 'A':
+         day = (day - 10) % 360;
+         year = (year - 5) % 360;
+         glutPostRedisplay();
+         break;
       default:
          break;
    }
