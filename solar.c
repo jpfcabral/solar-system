@@ -17,14 +17,24 @@ void init(void)
 void display(void)
 {
    glClear (GL_COLOR_BUFFER_BIT);
-   glColor3f (1.0, 1.0, 1.0);
 
    glPushMatrix();
-   glutWireSphere(1.0, 20, 16);   /* draw sun */
+
+   glColor3f (0.901, 0.654, 0.039); /* laranja amarelado */
+   glutSolidSphere(1.0, 20, 16);   /* solid sun */
+
+   glColor3f (1.0, 1.0, 1.0);	   /* branco */
+   glutWireSphere(1.0, 20, 16);
+
    glRotatef ((GLfloat) year, 0.0, 1.0, 0.0);
    glTranslatef ((GLfloat) x_planet, (GLfloat) y_planet, 0.0);
    glRotatef ((GLfloat) day, 0.0, 1.0, 0.0);
-   glutWireSphere(0.2, 10, 8);    /* draw smaller planet */
+
+   glColor3f (0.2, 0.2, 1.0); /* azul claro */
+   glutSolidSphere(0.2, 10, 8);    /* draw smaller planet */
+   glColor3f (1.0, 1.0, 1.0);  	   /* branco */
+   glutWireSphere(0.2, 10, 8);
+
    glPopMatrix();
    glutSwapBuffers();
 }
