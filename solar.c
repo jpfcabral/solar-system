@@ -33,20 +33,17 @@ Corpo terra;
 GLuint texturaId[10];
 
 void inicializaCorpos(){
-   
-	sol.faces = 50;
-	sol.raio = 10.0;
-   sol.posX = 0.0;
-   sol.posY = 0.0;
-   sol.posZ = 0.0;
+  sol.faces = 50;
+  sol.raio = 5.0;
+  sol.posX = 0.0;
+  sol.posY = 0.0;
+  sol.posZ = 0.0;
 
-	terra.raio = 2.0;
+	terra.raio = 1.1;
 	terra.faces = 50;
-   terra.posX = 0.0;
-   terra.posY = 0.0;
-   terra.posZ = 0.0;
-
-
+  terra.posX = 0.0;
+  terra.posY = 0.0;
+  terra.posZ = 0.0;
 }
 
 void carregaTextura(GLuint texId, char* filePath){
@@ -119,41 +116,55 @@ void carregaTextura(GLuint texId, char* filePath){
     }
 }
 
+void drawSpheres(int raio, GLuint _sphereTextureId){
+    glColor3f(0.0,1.0,0.0);
+    GLUquadricObj* pQuadric = gluNewQuadric();
+    gluQuadricDrawStyle(pQuadric, GLU_FILL);
+    glBindTexture(GL_TEXTURE_2D, _sphereTextureId);
+    gluQuadricTexture(pQuadric, 'y');
+    gluQuadricNormals(pQuadric, GLU_SMOOTH);
+    glTranslatef(-200.0,200,-1000.0);
+    gluSphere(pQuadric, raio, 20, 20);
+}
+
 void desenhaPlaneta(float raio, int qtd_meridianos, int qtd_paralelos, GLint texId){
+    //glColor3f(0.0,1.0,0.0);
    
    glEnable(GL_TEXTURE_2D);
    //glPushMatrix();
-   glBindTexture(GL_TEXTURE_2D, texId);
+   
    GLUquadricObj* q = gluNewQuadric ( );
 
    // Define o estilo de desenho  - GLU_FILL -> renderização das quádricas como polígonos primitivos
    gluQuadricDrawStyle ( q, GLU_FILL );
 
-   // Define os vetores normas da Quadric - GLU_SMOOTH -> Uma normal para cada vértice
-   gluQuadricNormals ( q, GLU_SMOOTH );
+   glBindTexture(GL_TEXTURE_2D, texId);
 
    // Habilita textura na Quadric
    gluQuadricTexture ( q, GL_TRUE );
+
+   // Define os vetores normas da Quadric - GLU_SMOOTH -> Uma normal para cada vértice
+   gluQuadricNormals ( q, GLU_SMOOTH );
+
 
    // Desenha esfera com a Quadric - (lHori e lVert - corresponde a quantidade de meridianos e paralelos)
    gluSphere ( q, raio, qtd_meridianos, qtd_paralelos);
 
    // Exclui a quadric
-   gluDeleteQuadric ( q );
+   //gluDeleteQuadric ( q );
    //glPopMatrix();
    glDisable(GL_TEXTURE_2D);
 }
 
 void renderizaSistema(){
 
-   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_ADD);
+  // glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_ADD);
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
-   glPushMatrix();
-   
    // Desenha o Sol
    desenhaPlaneta(sol.raio, sol.faces, sol.faces, texturaId[TEXT_SOL_INDEX]);
+   //drawSpheres(sol.raio, texturaId[TEXT_SOL_INDEX]);
 
-   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
    // Desenha a Terra
    glRotatef ((GLfloat) year, 0.0, 1.0, 0.0);
@@ -161,9 +172,8 @@ void renderizaSistema(){
    glRotatef ((GLfloat) day, 0.0, 1.0, 0.0);
 	
    desenhaPlaneta(terra.raio, terra.faces, terra.faces, texturaId[TEXT_TERRA_INDEX]);
+   //drawSpheres(terra.raio, texturaId[TEXT_TERRA_INDEX]);
    
-   glPopMatrix();
-   glutSwapBuffers();
 
 }
 
@@ -178,8 +188,8 @@ void init(void)
    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
    // Carrega as texturas
-   carregaTextura(texturaId[TEXT_SOL_INDEX], "texturas/Sol.jpg");
-	carregaTextura(texturaId[TEXT_TERRA_INDEX], "texturas/Terra.jpg");
+  carregaTextura(texturaId[TEXT_SOL_INDEX], "texturas/Sol.jpg");
+  carregaTextura(texturaId[TEXT_TERRA_INDEX], "texturas/Terra.jpg");
 	// carregaTextura(texturaId[2], "../texturas/Venus.jpg");
 	// carregaTextura(texturaId[3], "../texturas/Mercurio.jpg");
 	// carregaTextura(texturaId[4], "../texturas/Marte.jpg");
@@ -194,7 +204,7 @@ void display(void)
 {
    glClear (GL_COLOR_BUFFER_BIT);
 
-   // glPushMatrix();
+    glPushMatrix();
 
    // glColor3f (0.901, 0.654, 0.039); /* laranja amarelado */
    // glutSolidSphere(1.0, 20, 16);   /* solid sun */
@@ -211,11 +221,12 @@ void display(void)
    // glColor3f (1.0, 1.0, 1.0);  	   /* branco */
    // glutWireSphere(0.2, 10, 8);
 
-   // glPopMatrix();
    // glutSwapBuffers();
-   glLoadIdentity();
+   //glLoadIdentity();
 
    renderizaSistema();
+   glPopMatrix();
+   glutSwapBuffers();
 }
 
 void reshape (int w, int h)
@@ -223,10 +234,10 @@ void reshape (int w, int h)
    glViewport (0, 0, (GLsizei) w, (GLsizei) h); 
    glMatrixMode (GL_PROJECTION);
    glLoadIdentity ();
-   gluPerspective(60.0, (GLfloat) w/(GLfloat) h, 1.0, 20.0);
+   gluPerspective(60.0, (GLfloat) w/(GLfloat) h, 1.0, 50.0);
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
-   gluLookAt (0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+   gluLookAt (14.0, 14.0, 14.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 }
 
 void keyboard (unsigned char key, int x, int y)
@@ -242,8 +253,8 @@ void keyboard (unsigned char key, int x, int y)
          break;
       case 'y':
          t += 5;
-         terra.posX = 2 * cos(t * M_PI / 360);
-         terra.posY = 2 * sin(t * M_PI / 360);
+         terra.posX = 10 * cos(t * M_PI / 360);
+         terra.posY = 10 * sin(t * M_PI / 360);
          //printf("x_planet = %f\n", x_planet);
          glutPostRedisplay();
          break;
@@ -253,8 +264,8 @@ void keyboard (unsigned char key, int x, int y)
          break;
       case 'a':
          t += 5;
-         terra.posX = 2 * cos(t * M_PI / 360);
-         terra.posY = 2 * sin(t * M_PI / 360);
+         terra.posX = 10 * cos(t * M_PI / 360);
+         terra.posY = 10 * sin(t * M_PI / 360);
          day = (day + 10) % 360;
          //printf("x_planet = %f\n", x_planet);
          glutPostRedisplay();
