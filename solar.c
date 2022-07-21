@@ -157,7 +157,8 @@ void desenhaPlaneta(float raio, int qtd_meridianos, int qtd_paralelos, GLint tex
 }
 
 void renderizaSistema(){
-
+   glClear (GL_COLOR_BUFFER_BIT);
+   glPushMatrix();
   // glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_ADD);
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
@@ -165,15 +166,11 @@ void renderizaSistema(){
    desenhaPlaneta(sol.raio, sol.faces, sol.faces, texturaId[TEXT_SOL_INDEX]);
    //drawSpheres(sol.raio, texturaId[TEXT_SOL_INDEX]);
 
-
-   // Desenha a Terra
-   glRotatef ((GLfloat) year, 0.0, 1.0, 0.0);
-   glTranslatef ((GLfloat) terra.posX, (GLfloat) terra.posY, terra.posZ);
-   glRotatef ((GLfloat) day, 0.0, 1.0, 0.0);
+   glTranslatef ((GLfloat) terra.posX, (GLfloat) terra.posY, (GLfloat) terra.posZ);
 	
    desenhaPlaneta(terra.raio, terra.faces, terra.faces, texturaId[TEXT_TERRA_INDEX]);
    //drawSpheres(terra.raio, texturaId[TEXT_TERRA_INDEX]);
-   
+   glPopMatrix();
 
 }
 
@@ -202,9 +199,6 @@ void init(void)
 
 void display(void)
 {
-   glClear (GL_COLOR_BUFFER_BIT);
-
-    glPushMatrix();
 
    // glColor3f (0.901, 0.654, 0.039); /* laranja amarelado */
    // glutSolidSphere(1.0, 20, 16);   /* solid sun */
@@ -225,7 +219,6 @@ void display(void)
    //glLoadIdentity();
 
    renderizaSistema();
-   glPopMatrix();
    glutSwapBuffers();
 }
 
@@ -234,10 +227,10 @@ void reshape (int w, int h)
    glViewport (0, 0, (GLsizei) w, (GLsizei) h); 
    glMatrixMode (GL_PROJECTION);
    glLoadIdentity ();
-   gluPerspective(60.0, (GLfloat) w/(GLfloat) h, 1.0, 50.0);
+   gluPerspective(60.0, (GLfloat) w/(GLfloat) h, 1.0, 20.0);
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
-   gluLookAt (14.0, 14.0, 14.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+   gluLookAt (0.0, 0.0, 20, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 }
 
 void keyboard (unsigned char key, int x, int y)
